@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
@@ -22,28 +21,3 @@
         android:title="@string/place_two"/>
     
 </menu>
-=======
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <item
-        android:id="@+id/delete_badges"
-        android:title="@string/delete"/>
-    
-    <item
-		android:id="@+id/print_badges"
-        android:title="@string/print"/>
-    
-    <item
-		android:id="@+id/place_one"
-        android:title="@string/place_one"/>
-    
-    <item
-		android:id="@+id/place_invalid"
-        android:title="@string/place_invalid"/>
-    
-    <item
-		android:id="@+id/place_two"
-        android:title="@string/place_two"/>
-    
-</menu>
->>>>>>> d3c7ea0eae58583a2dc70002dc12a3aab45117a3
