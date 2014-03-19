@@ -2,7 +2,6 @@ package course.labs.locationlab;
 
 import java.util.ArrayList;
 
-
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -44,56 +43,61 @@ public class PlaceViewActivity extends ListActivity implements LocationListener 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-        
-
-		
-        // TODO - add a footerView to the ListView
-        // You can use footer_view.xml to define the footer
+		// add a footerView to the ListView
+		// You can use footer_view.xml to define the footer
 		LayoutInflater inflater = getLayoutInflater();
-		TextView footerView = (TextView) inflater.inflate(R.layout.footer_view, null);
+		TextView footerView = (TextView) inflater.inflate(R.layout.footer_view,
+				null);
 		getListView().addFooterView(footerView);
-		
-		
-		// TODO - Set up the app's user interface
-        // This class is a ListActivity, so it has its own ListView
-        // ListView's adapter should be a PlaceViewAdapter
+
+		// Set up the app's user interface
+		// This class is a ListActivity, so it has its own ListView
+		// ListView's adapter should be a PlaceViewAdapter
 		mAdapter = new PlaceViewAdapter(getApplicationContext());
 		setListAdapter(mAdapter);
 
+		// footerView must respond to user clicks.
+		// Must handle 3 cases:
 
-		
-        // TODO - When the footerView's onClick() method is called, it must issue the
-        // following log call
-        // log("Entered footerView.OnClickListener.onClick()");
-        
-        // footerView must respond to user clicks.
-        // Must handle 3 cases:
-        // 1) The current location is new - download new Place Badge. Issue the
-        // following log call:
-        // log("Starting Place Download");
-
-        // 2) The current location has been seen before - issue Toast message.
-        // Issue the following log call:
-        // log("You already have this location badge");
-        
-        // 3) There is no current location - response is up to you. The best
-        // solution is to disable the footerView until you have a location.
-        // Issue the following log call:
-        // log("Location data is not available");
-		
 		footerView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				// When the footerView's onClick() method is called, it must
+				// issue the
+				// following log call
 				log("Entered footerView.OnClickListener.onClick()");
-				
-				if(mLastLocationReading == null){
-					
+
+				if (mLastLocationReading != null) {
+
+					if (!mAdapter.intersects(mLastLocationReading)) {
+						// 1) The current location is new - download new Place
+						// Badge. Issue the
+						// following log call:
+						log("Starting Place Download");
+						PlaceDownloaderTask p = new PlaceDownloaderTask(
+								PlaceViewActivity.this);
+						p.execute(mLastLocationReading);
+					} else {
+						// 2) The current location has been seen before - issue
+						// Toast message.
+						// Issue the following log call:
+						log("You already have this location badge");
+						Toast toast = Toast.makeText(getApplicationContext(),
+								"You already have this location badge",
+								Toast.LENGTH_LONG);
+						toast.show();
+					}
+				} else {
+					// 3) There is no current location - response is up to you.
+					// The best
+					// solution is to disable the footerView until you have a
+					// location.
+					// Issue the following log call:
+					log("Location data is not available");
 				}
-
-
 			}
+
 		});
- 		
 
 	}
 
@@ -104,15 +108,22 @@ public class PlaceViewActivity extends ListActivity implements LocationListener 
 		mMockLocationProvider = new MockLocationProvider(
 				LocationManager.NETWORK_PROVIDER, this);
 
-        // TODO - Check NETWORK_PROVIDER for an existing location reading.
-        // Only keep this last reading if it is fresh - less than 5 minutes old.
+		// Check NETWORK_PROVIDER for an existing location reading.
+		mLocationManager = (LocationManager) this
+				.getSystemService(Context.LOCATION_SERVICE);
+		Location newLocationReading = mLocationManager
+				.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-	
-		
-        // TODO - register to receive location updates from NETWORK_PROVIDER
+		// Only keep this last reading if it is fresh - less than 5 minutes old.
+		if (newLocationReading != null) {
+			if (age(mLastLocationReading) > FIVE_MINS) {
+				mLastLocationReading = newLocationReading;
+			}
+		}
 
-
-		
+		// register to receive location updates from NETWORK_PROVIDER
+		mLocationManager.requestLocationUpdates(
+				LocationManager.NETWORK_PROVIDER, mMinTime, mMinDistance, this);
 	}
 
 	@Override
@@ -120,10 +131,9 @@ public class PlaceViewActivity extends ListActivity implements LocationListener 
 
 		mMockLocationProvider.shutdown();
 
-		// TODO - unregister for location updates
+		// unregister for location updates
 		mLocationManager.removeUpdates(this);
-		
-		
+
 		super.onPause();
 	}
 
@@ -138,14 +148,20 @@ public class PlaceViewActivity extends ListActivity implements LocationListener 
 	@Override
 	public void onLocationChanged(Location currentLocation) {
 
-        // TODO - Handle location updates
-        // Cases to consider
-        // 1) If there is no last location, keep the current location.
-        // 2) If the current location is older than the last location, ignore
-        // the current location
-        // 3) If the current location is newer than the last locations, keep the
-        // current location.
-
+		// Handle location updates
+		// Cases to consider
+		// 1) If there is no last location, keep the current location.
+		// 2) If the current location is older than the last location, ignore
+		// the current location
+		// 3) If the current location is newer than the last locations, keep the
+		// current location.
+		if (mLastLocationReading == null) {
+			mLastLocationReading = currentLocation;
+		} else {
+			if (age(currentLocation) < age(mLastLocationReading)) {
+				mLastLocationReading = currentLocation;
+			}
+		}
 
 	}
 
