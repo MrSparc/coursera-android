@@ -31,9 +31,9 @@ import android.util.Log;
 public class PlaceDownloaderTask extends AsyncTask<Location, Void, PlaceRecord> {
 
 	// Change to false if you don't have network access
-	private static final boolean HAS_NETWORK = true;
+	private static final boolean HAS_NETWORK = false;
 
-	// TODO - put your www.geonames.org account name here.
+	// put your www.geonames.org account name here.
 	private static String USERNAME = "mrsparc";
 
 	private HttpURLConnection mHttpUrl;

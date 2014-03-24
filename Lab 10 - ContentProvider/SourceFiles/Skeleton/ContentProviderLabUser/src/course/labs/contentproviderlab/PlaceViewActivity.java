@@ -2,9 +2,12 @@ package course.labs.contentproviderlab;
 
 import java.util.ArrayList;
 
+import course.labs.contentproviderlab.provider.PlaceBadgesContract;
+
 import android.app.ListActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.location.Location;
@@ -52,14 +55,14 @@ public class PlaceViewActivity extends ListActivity implements
 
  
 
-        // TODO - add a footerView to the ListView
+        // add a footerView to the ListView
         // You can use footer_view.xml to define the footer
 		LayoutInflater inflater = getLayoutInflater();
 		TextView footerView = (TextView) inflater.inflate(R.layout.footer_view,
 				null);
 		getListView().addFooterView(footerView);
 
-        // TODO - Set up the app's user interface
+        // Set up the app's user interface
         // This class is a ListActivity, so it has its own ListView
 		mCursorAdapter = new PlaceViewAdapter(getApplicationContext(), null, 0);
 		setListAdapter(mCursorAdapter);
@@ -106,7 +109,8 @@ public class PlaceViewActivity extends ListActivity implements
 		
 		
 		
-		// TODO - Initialize a CursorLoader
+		// Initialize a CursorLoader
+		getLoaderManager().initLoader(0, null, this);
 
         
 	}
@@ -160,7 +164,7 @@ public class PlaceViewActivity extends ListActivity implements
 	@Override
 	public void onLocationChanged(Location currentLocation) {
 
-		// TODO - Handle location updates
+		// Handle location updates
 		// Cases to consider
 		// 1) If there is no last location, keep the current location.
 		// 2) If the current location is older than the last location, ignore
@@ -200,26 +204,21 @@ public class PlaceViewActivity extends ListActivity implements
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 		log("Entered onCreateLoader()");
 
-		// TODO - Create a new CursorLoader and return it
-		
-        
-        return null;
+		// Create a new CursorLoader and return it
+		CursorLoader cursorLoader = new CursorLoader(getApplicationContext(), PlaceBadgesContract.CONTENT_URI, null, null, null, null);
+		return cursorLoader;
 	}
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> newLoader, Cursor newCursor) {
-
-		// TODO - Swap in the newCursor
-
-	
+		// Swap in the newCursor
+		mCursorAdapter.swapCursor(newCursor);
     }
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> newLoader) {
-
-		// TODO - Swap in a null Cursor
-
-	
+		// Swap in a null Cursor
+		mCursorAdapter.swapCursor(null);
     }
 
 	private long age(Location location) {
