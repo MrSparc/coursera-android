@@ -237,12 +237,12 @@ public class CreateStoryActivity extends StoryActivityBase {
 		
 		// Use getOutputMediaFile() to create a new 
 		// filename for this specific sound file
-		File filename = getOutputMediaFile(MEDIA_TYPE_AUDIO);
+		Uri soundFileUri = getOutputMediaFileUri(MEDIA_TYPE_AUDIO);
 				
 		
 		// Add the filename to the Intent as an extra. Use the Intent-extra name
 		// from the SoundRecordActivity class, EXTRA_OUTPUT
-		soundRecIntent.putExtra(SoundRecordActivity.EXTRA_OUTPUT, filename);
+		soundRecIntent.putExtra(SoundRecordActivity.EXTRA_OUTPUT, soundFileUri.toString());
 		
 		
 		// Start a new activity for result, using the new intent and the request
@@ -263,12 +263,13 @@ public class CreateStoryActivity extends StoryActivityBase {
 		
 		// Set the imagePath for this image file using the pre-made function
 		// getOutputMediaFile to create a new filename for this specific image;
-		File filename = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-		
+		//File filename = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+		Uri imageFileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+		fragment.imagePath = imageFileUri;
 		
 		// Add the filename to the Intent as an extra. Use the Intent-extra name
 		// from the MediaStore class, EXTRA_OUTPUT
-		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, filename);
+		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
 		
 		
 		// Start a new activity for result, using the new intent and the request
@@ -285,16 +286,17 @@ public class CreateStoryActivity extends StoryActivityBase {
 		// Hint: use standard Intent from MediaStore class
 		// See: http://developer.android.com/reference/android/provider/MediaStore.html
 		Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+		
 
 		
 		// Set the fileUri for this video file using the pre-made function
 		// getOutputMediaFile to create a new filename for this specific video;
-		File filename = getOutputMediaFile(MEDIA_TYPE_VIDEO);
+		Uri videoFileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);
 		
 		
 		// Add the filename to the Intent as an extra. Use the Intent-extra name
 		// from the MediaStore class, EXTRA_OUTPUT
-		videoIntent.putExtra(MediaStore.EXTRA_OUTPUT, filename);
+		videoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoFileUri);
 
 		
 		// Specify as an extra that the video quality should be HIGH. Use the
