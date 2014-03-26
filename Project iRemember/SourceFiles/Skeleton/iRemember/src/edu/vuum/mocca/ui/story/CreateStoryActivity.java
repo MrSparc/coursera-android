@@ -237,12 +237,12 @@ public class CreateStoryActivity extends StoryActivityBase {
 		
 		// Use getOutputMediaFile() to create a new 
 		// filename for this specific sound file
-		Uri soundFileUri = getOutputMediaFileUri(MEDIA_TYPE_AUDIO);
+		File soundFile = getOutputMediaFile(MEDIA_TYPE_AUDIO);
 				
 		
 		// Add the filename to the Intent as an extra. Use the Intent-extra name
 		// from the SoundRecordActivity class, EXTRA_OUTPUT
-		soundRecIntent.putExtra(SoundRecordActivity.EXTRA_OUTPUT, soundFileUri.toString());
+		soundRecIntent.putExtra(SoundRecordActivity.EXTRA_OUTPUT, soundFile.getAbsolutePath());
 		
 		
 		// Start a new activity for result, using the new intent and the request
